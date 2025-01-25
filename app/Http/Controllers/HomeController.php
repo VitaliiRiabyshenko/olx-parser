@@ -2,19 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\Parser;
+use App\Http\Services\Home\HomeService;
+use App\Http\Requests\UserParserRequest;
 
 class HomeController extends Controller
 {
-    private $parser;
+    private $homeService;
 
-    public function __construct(Parser $parser)
+    public function __construct(HomeService $homeService)
     {
-        $this->parser = $parser;
+        $this->homeService = $homeService;
     }
 
-    public function __invoke()
+    public function index()
     {
-        $this->parser->parser();
+        return view('home');
+    }
+
+    public function store(UserParserRequest $request)
+    {
+        $data = $request->validated();
+
+        $user = $this->homeService->store($data);
+
+        if (!$user->email_verified_at) {
+            return redirect()->route('verify-email-index');
+        } else {
+            return view('home');
+        }
     }
 }

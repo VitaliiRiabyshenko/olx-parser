@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\Parser;
+use App\Http\Services\ParserService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,6 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(Parser::class, function ($app) {
+            return new ParserService();
+        });
     }
 
     /**
